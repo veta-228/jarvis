@@ -3,7 +3,7 @@ import datetime
 from telebot import types
 import pymysql
 
-token = '5336433139:AAEWtMsLq86KMuIveVrLzWvzy3aGEQ7K_ZM'
+token = ''
 bot = telebot.TeleBot(token)
 
 
