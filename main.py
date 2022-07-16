@@ -3,6 +3,9 @@ import datetime
 from telebot import types
 import pymysql
 
+
+
+
 token = ''
 bot = telebot.TeleBot(token)
 
@@ -13,13 +16,15 @@ def timeIn(time, utc):
         time = time.split(":")
         hours = int(time[0])
         hours = hours - int(utc)
-        if hours < 0: hours += 24
+
+        if hours < 0 : hours += 24
     else:
         utc = utc.replace("-", "")
         time = time.split(":")
         hours = int(time[0])
         hours = hours + int(utc)
-        if hours > 24: hours -= 24
+
+        if hours > 24 : hours -= 24
     hours = str(hours)
     if len(hours) == 1:
         hours = "0" + hours
@@ -33,13 +38,15 @@ def timeOut(time, utc):
         time = time.split(":")
         hours = int(time[0])
         hours = hours + int(utc)
-        if hours > 24: hours -= 24
+
+        if hours > 24 : hours -= 24
     else:
         utc = utc.replace("-", "")
         time = time.split(":")
         hours = int(time[0])
         hours = hours - int(utc)
-        if hours < 0: hours += 24
+
+        if hours < 0 : hours += 24
     hours = str(hours)
     if len(hours) == 1:
         hours = "0" + hours
@@ -54,14 +61,16 @@ def dateIn(time, utc, date):
         time = time.split(":")
         hours = int(time[0])
         hours = hours - int(utc)
-        if hours < 0:
+
+        if hours < 0 :
             day = day - datetime.timedelta(days=1)
     else:
         utc = utc.replace("-", "")
         time = time.split(":")
         hours = int(time[0])
         hours = hours + int(utc)
-        if hours > 24:
+
+        if hours > 24 :
             day = day + datetime.timedelta(days=1)
     return day
 
@@ -73,21 +82,23 @@ def dateOut(time, utc, date):
         time = time.split(":")
         hours = int(time[0])
         hours = hours + int(utc)
-        if hours > 24:
+
+        if hours > 24 :
             day = day - datetime.timedelta(days=1)
     else:
         utc = utc.replace("-", "")
         time = time.split(":")
         hours = int(time[0])
         hours = hours - int(utc)
-        if hours < 0:
+        min = int(time[1])
+        if hours < 0 :
             day = day + datetime.timedelta(days=1)
     return day
 
 
 def getStatus(userid):
-    con = pymysql.connect(host='localhost', user='root', password='', database='bot', charset='utf8mb4',
-                          cursorclass=pymysql.cursors.DictCursor)
+    con = pymysql.connect(host='projectlove.mysql.pythonanywhere-services.com', user='projectlove', password='ittakestwo28', database='projectlove$bot', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+
     with con:
         cur = con.cursor()
         cur.execute(f"SELECT * FROM `statustable` WHERE userid = '{userid}';")
@@ -100,16 +111,16 @@ def getStatus(userid):
 
 def editStatus(userid, status):
     if not getStatus(userid):
-        con = pymysql.connect(host='localhost', user='root', password='', database='bot', charset='utf8mb4',
-                              cursorclass=pymysql.cursors.DictCursor)
+        con = pymysql.connect(host='projectlove.mysql.pythonanywhere-services.com', user='projectlove', password='ittakestwo28', database='projectlove$bot', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+
         with con:
             cur = con.cursor()
             cur.execute(f"INSERT INTO `statustable` (`id`, `userid`, `status`) VALUES (NULL, '{userid}',"
                         f" '{status}');")
             con.commit()
 
-    con = pymysql.connect(host='localhost', user='root', password='', database='bot', charset='utf8mb4',
-                              cursorclass=pymysql.cursors.DictCursor)
+    con = pymysql.connect(host='projectlove.mysql.pythonanywhere-services.com', user='projectlove', password='ittakestwo28', database='projectlove$bot', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+
     with con:
         cur = con.cursor()
         cur.execute(f"UPDATE `statustable` SET `status` = '{status}' WHERE `userid` = {userid};")
@@ -117,8 +128,8 @@ def editStatus(userid, status):
 
 
 def getUTC(userid):
-    con = pymysql.connect(host='localhost', user='root', password='', database='bot', charset='utf8mb4',
-                          cursorclass=pymysql.cursors.DictCursor)
+    con = pymysql.connect(host='projectlove.mysql.pythonanywhere-services.com', user='projectlove', password='ittakestwo28', database='projectlove$bot', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+
     with con:
         cur = con.cursor()
         cur.execute(f"SELECT * FROM `utctable` WHERE userid = '{userid}';")
@@ -130,8 +141,8 @@ def getUTC(userid):
 
 
 def addUTC(userid, utc):
-    con = pymysql.connect(host='localhost', user='root', password='', database='bot', charset='utf8mb4',
-                          cursorclass=pymysql.cursors.DictCursor)
+    con = pymysql.connect(host='projectlove.mysql.pythonanywhere-services.com', user='projectlove', password='ittakestwo28', database='projectlove$bot', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+
     if utc >= 0:
         utc = "+" + str(utc)
     with con:
@@ -142,8 +153,8 @@ def addUTC(userid, utc):
 
 
 def delUTC(userid):
-    con = pymysql.connect(host='localhost', user='root', password='', database='bot', charset='utf8mb4',
-                          cursorclass=pymysql.cursors.DictCursor)
+    con = pymysql.connect(host='projectlove.mysql.pythonanywhere-services.com', user='projectlove', password='ittakestwo28', database='projectlove$bot', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+
     with con:
         cur = con.cursor()
         cur.execute(f"DELETE FROM `utctable` WHERE `utctable`.`userid` = '{userid}';")
@@ -153,8 +164,8 @@ def delUTC(userid):
 def addNote(userid, date, time, message):
     utc = getUTC(userid)
     time = timeIn(time, utc)
-    con = pymysql.connect(host='localhost', user='root', password='', database='bot', charset='utf8mb4',
-                          cursorclass=pymysql.cursors.DictCursor)
+    con = pymysql.connect(host='projectlove.mysql.pythonanywhere-services.com', user='projectlove', password='ittakestwo28', database='projectlove$bot', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+
 
     with con:
         cur = con.cursor()
@@ -164,8 +175,8 @@ def addNote(userid, date, time, message):
 
 
 def getNotes(userid, date):
-    con = pymysql.connect(host='localhost', user='root', password='', database='bot', charset='utf8mb4',
-                          cursorclass=pymysql.cursors.DictCursor)
+    con = pymysql.connect(host='projectlove.mysql.pythonanywhere-services.com', user='projectlove', password='ittakestwo28', database='projectlove$bot', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+
     with con:
         cur = con.cursor()
         cur.execute(f"SELECT * FROM `timetable` WHERE date = '{date}' and userid = '{userid}' ORDER BY "
@@ -175,8 +186,8 @@ def getNotes(userid, date):
 
 
 def delNote(userid, noteid):
-    con = pymysql.connect(host='localhost', user='root', password='', database='bot', charset='utf8mb4',
-                          cursorclass=pymysql.cursors.DictCursor)
+    con = pymysql.connect(host='projectlove.mysql.pythonanywhere-services.com', user='projectlove', password='ittakestwo28', database='projectlove$bot', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+
     with con:
         cur = con.cursor()
         cur.execute(f"DELETE FROM `timetable` WHERE `timetable`.`id` = {noteid} and `timetable`.`userid` = '{userid}';")
@@ -184,8 +195,8 @@ def delNote(userid, noteid):
 
 
 def getMoney(userid):
-    con = pymysql.connect(host='localhost', user='root', password='', database='bot', charset='utf8mb4',
-                          cursorclass=pymysql.cursors.DictCursor)
+    con = pymysql.connect(host='projectlove.mysql.pythonanywhere-services.com', user='projectlove', password='ittakestwo28', database='projectlove$bot', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+
     with con:
         cur = con.cursor()
         cur.execute(f"SELECT * FROM `money` WHERE userid = '{userid}';")
@@ -197,7 +208,6 @@ def calculate(rows):
     summ = 0
     for row in rows:
         row = row["plusminus"]
-        row = str(round(row))
         if row[0] == '+':
             row = row.replace("+", "")
             summ += int(row)
@@ -209,8 +219,8 @@ def calculate(rows):
 
 def minusfunc(userid, date, minus, category, isplanned):
 
-    con = pymysql.connect(host='localhost', user='root', password='', database='bot', charset='utf8mb4',
-                          cursorclass=pymysql.cursors.DictCursor)
+    con = pymysql.connect(host='projectlove.mysql.pythonanywhere-services.com', user='projectlove', password='ittakestwo28', database='projectlove$bot', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+
     if isplanned.lower() == 'н':
         planned = 0
     else:
@@ -226,8 +236,8 @@ def minusfunc(userid, date, minus, category, isplanned):
 
 
 def plusfunc(userid, date, plus):
-    con = pymysql.connect(host='localhost', user='root', password='', database='bot', charset='utf8mb4',
-                          cursorclass=pymysql.cursors.DictCursor)
+    con = pymysql.connect(host='projectlove.mysql.pythonanywhere-services.com', user='projectlove', password='ittakestwo28', database='projectlove$bot', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+
 
     plus = '+' + str(plus)
 
@@ -236,6 +246,7 @@ def plusfunc(userid, date, plus):
         cur.execute(f"INSERT INTO `money` (`id`, `userid`, `date`, `plusminus`) VALUES"
                     f" (NULL, '{userid}', '{date}', '{plus}');")
         con.commit()
+
 
 
 def getStat(userid, date):
@@ -378,32 +389,7 @@ def start(message):
 
 @bot.message_handler(content_types=['text'])
 def eny(message):
-    if message.text == 'Другое':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        ra_but = types.KeyboardButton('RA')
-        sh_but = types.KeyboardButton('Shalplatte')
-        i_but = types.KeyboardButton('Я')
-        act_but = types.KeyboardButton('Активная деятельность')
-        back_but = types.KeyboardButton('Назад')
-        markup.add(ra_but, sh_but, i_but, act_but, back_but)
-        bot.send_message(message.chat.id,
-                         'Видимо сейчас Вы хотите продемонстрировать свои достижения. Чем именно хотите '
-                         'похвастаться?', reply_markup=markup)
-
-    elif message.text == 'Я':
-        bot.send_message(message.chat.id, text="Еще раз здравствуй! Я-Подручный, но не тот, что был у Боба Строителя. "
-                                               "Я выполняю роль карманного помощника (то есть предоставляю всю "
-                                               "необходимую информацию как можно скорее)! Надеюсь, что могу оказаться "
-                                               "полезным не только для своего создателя!")
-    elif message.text == 'RA':
-        bot.send_message(message.chat.id, text="Один изсильнейших проектов нашего создателя. Он помогает понять "
-                                               "наиболее комфортный маршрут для жителей г.Хабаровска благодаря тому, "
-                                               "что способен выводит уровень заполненности кабины транспорта, "
-                                               "более подробно познакомиться сможете , перейдя по ссылке или QR-коду")
-    elif message.text == 'Shalplatte':
-        bot.send_message(message.chat.id, text="Самый старый из нас) Был создан на краевой смене и является одним из "
-                                               "лучших решением кейса Солнце в рюкзаке")
-    elif message.text == 'Расписание':
+    if message.text == 'Расписание':
         if not getUTC(message.chat.id):
             global status
             editStatus(message.chat.id, "UTC")
@@ -426,11 +412,16 @@ def eny(message):
     elif message.text == 'Удалить':
         bot.send_message(message.chat.id, 'Введите id записи')
         editStatus(message.chat.id, 'delete')
-        
+
     elif message.text == 'Добавить':
+
+
+
         bot.send_message(message.chat.id, 'Введите данные в формате\n\nдд.мм.гггг; чч:мм; текст сообщения\n\n'
                                           'Учитывайте пробелы')
+
         editStatus(message.chat.id, 'add')
+
 
     elif message.text == 'Изменить часовой пояс':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -449,12 +440,11 @@ def eny(message):
         hist_but = types.KeyboardButton('Статистика')
         back_but = types.KeyboardButton('Назад')
         markup.add(minus_but, plus_but, hist_but, back_but)
-        try:
-            rows = getMoney(message.chat.id)
-            summ = calculate(rows)
-            bot.send_message(message.chat.id, text="Остаток: " + str(summ), reply_markup=markup)
-        except:
-            bot.send_message(message.chat.id, text="Ошибка БД")
+
+        rows = getMoney(message.chat.id)
+        summ = calculate(rows)
+        bot.send_message(message.chat.id, text="Остаток: " + str(summ), reply_markup=markup)
+
 
     elif message.text == 'Трата':
         bot.send_message(message.chat.id, text="Введите количество потраченных средств в формате:\n\n"
@@ -475,6 +465,7 @@ def eny(message):
             bot.send_message(message.chat.id, text=stat)
         except:
             bot.send_message(message.chat.id, 'Ошибка базы данных')
+
 
     elif message.text == 'Назад':
         start(message)
@@ -505,9 +496,15 @@ def eny(message):
                 utc = getUTC(message.chat.id)
                 date = dateIn(inf[1], utc, inf[0])
                 inf[0] = date.strftime("%d.%m.%Y")
-                addNote(message.chat.id, inf[0], inf[1], inf[2])
-                bot.send_message(message.chat.id, 'Добавлено')
-                printNotes(message.chat.id)
+                time = inf[1]
+                time=time.split(":")
+                if int(time[1])<60 and int(time[0])<24:
+                    addNote(message.chat.id, inf[0], inf[1], inf[2])
+                    bot.send_message(message.chat.id, 'Добавлено')
+                    printNotes(message.chat.id)
+                else:
+                    bot.send_message(message.chat.id, 'Ошибка ввода')
+                editStatus(message.chat.id, 'error')
             except:
                 bot.send_message(message.chat.id, 'Ошибка ввода')
             editStatus(message.chat.id, 'error')
@@ -529,14 +526,11 @@ def eny(message):
                 now = datetime.datetime.now()
                 date = now.strftime("%d.%m.%Y")
                 inf = message.text.split('; ')
-                if (inf[0].count(".") == 0) and (inf[0].count(",") == 0):
-                    minusfunc(message.chat.id, date, inf[0], inf[1], inf[2])
-                    bot.send_message(message.chat.id, 'Добавлено')
-                    rows = getMoney(message.chat.id)
-                    summ = calculate(rows)
-                    bot.send_message(message.chat.id, text="Остаток: " + str(summ))
-                else:
-                    bot.send_message(message.chat.id, 'Ошибка ввода')
+                minusfunc(message.chat.id, date, int(inf[0]), inf[1], inf[2])
+                bot.send_message(message.chat.id, 'Добавлено')
+                rows = getMoney(message.chat.id)
+                summ = calculate(rows)
+                bot.send_message(message.chat.id, text="Остаток: " + str(summ))
             except:
                 bot.send_message(message.chat.id, 'Ошибка ввода')
             editStatus(message.chat.id, 'error')
@@ -545,20 +539,19 @@ def eny(message):
             try:
                 now = datetime.datetime.now()
                 date = now.strftime("%d.%m.%Y")
-                if (message.text.count('.') == 0) and (message.text.count(',') == 0):
-                    plusfunc(message.chat.id, date, message.text)
-                    bot.send_message(message.chat.id, 'Добавлено')
-                    rows = getMoney(message.chat.id)
-                    summ = calculate(rows)
-                    bot.send_message(message.chat.id, text="Остаток: " + str(summ))
-                else:
-                    bot.send_message(message.chat.id, 'Ошибка ввода')
+                plusfunc(message.chat.id, date, int(message.text))
+                bot.send_message(message.chat.id, 'Добавлено')
+                rows = getMoney(message.chat.id)
+                summ = calculate(rows)
+                bot.send_message(message.chat.id, text="Остаток: " + str(summ))
             except:
                 bot.send_message(message.chat.id, 'Ошибка ввода')
+
             editStatus(message.chat.id, 'error')
 
         else:
             bot.send_message(message.chat.id, 'Я вас не понимаю')
+
 
 
 bot.polling(none_stop=True)
