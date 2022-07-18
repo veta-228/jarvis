@@ -3,11 +3,7 @@ import datetime
 from telebot import types
 import pymysql
 
-# con = pymysql.connect(host='projectlove.mysql.pythonanywhere-services.com', user='projectlove',
-# password='ittakestwo28', database='projectlove$bot', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
-
-
-token = '5336433139:AAEWtMsLq86KMuIveVrLzWvzy3aGEQ7K_ZM'
+token = '53'
 bot = telebot.TeleBot(token)
 
 
