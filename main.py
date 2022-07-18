@@ -3,10 +3,11 @@ import datetime
 from telebot import types
 import pymysql
 
+# con = pymysql.connect(host='projectlove.mysql.pythonanywhere-services.com', user='projectlove',
+# password='ittakestwo28', database='projectlove$bot', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
 
 
-
-token = ''
+token = '5336433139:AAEWtMsLq86KMuIveVrLzWvzy3aGEQ7K_ZM'
 bot = telebot.TeleBot(token)
 
 
@@ -84,7 +85,7 @@ def dateOut(time, utc, date):
         hours = hours + int(utc)
 
         if hours > 24 :
-            day = day - datetime.timedelta(days=1)
+            day = day + datetime.timedelta(days=1)
     else:
         utc = utc.replace("-", "")
         time = time.split(":")
@@ -92,7 +93,7 @@ def dateOut(time, utc, date):
         hours = hours - int(utc)
         min = int(time[1])
         if hours < 0 :
-            day = day + datetime.timedelta(days=1)
+            day = day - datetime.timedelta(days=1)
     return day
 
 
@@ -496,14 +497,10 @@ def eny(message):
                 utc = getUTC(message.chat.id)
                 date = dateIn(inf[1], utc, inf[0])
                 inf[0] = date.strftime("%d.%m.%Y")
-                time = inf[1]
-                time=time.split(":")
-                if int(time[1])<60 and int(time[0])<24:
-                    addNote(message.chat.id, inf[0], inf[1], inf[2])
-                    bot.send_message(message.chat.id, 'Добавлено')
-                    printNotes(message.chat.id)
-                else:
-                    bot.send_message(message.chat.id, 'Ошибка ввода')
+                time = datetime.datetime.strptime(inf[1], "%H:%M")
+                addNote(message.chat.id, inf[0], inf[1], inf[2])
+                bot.send_message(message.chat.id, 'Добавлено')
+                printNotes(message.chat.id)
                 editStatus(message.chat.id, 'error')
             except:
                 bot.send_message(message.chat.id, 'Ошибка ввода')
